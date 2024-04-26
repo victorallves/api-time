@@ -7,24 +7,24 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import br.com.sistemas.magna.model.Team;
-import br.com.sistemas.magna.repository.TeamRepository;
+import br.com.sistemas.magna.model.Time;
+import br.com.sistemas.magna.repository.TimeRepository;
 
 @RestController
-@RequestMapping("/api/teams")
-public class TeamController {
+@RequestMapping("/time")
+public class TimeController {
 
     @Autowired
-    private TeamRepository teamRepository;
+    private TimeRepository teamRepository;
 
     @GetMapping
-    public List<Team> getAllTeams() {
+    public List<Time> getAllTeams() {
         return teamRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Team> getTeamById(@PathVariable Long id) {
-        Team team = teamRepository.findById(id)
+    public ResponseEntity<Time> getTeamById(@PathVariable Long id) {
+        Time team = teamRepository.findById(id)
                                   .orElse(null);
         if (team != null) {
             return new ResponseEntity<>(team, HttpStatus.OK);
@@ -34,9 +34,9 @@ public class TeamController {
     }
 
     @PostMapping
-    public ResponseEntity<Team> createTeam(@RequestBody Team team) {
+    public ResponseEntity<Time> createTeam(@RequestBody Time team) {
         try {
-            Team createdTeam = teamRepository.save(team);
+            Time createdTeam = teamRepository.save(team);
             return new ResponseEntity<>(createdTeam, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -44,13 +44,13 @@ public class TeamController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Team> updateTeam(@PathVariable Long id, @RequestBody Team teamDetails) {
-        Team team = teamRepository.findById(id)
+    public ResponseEntity<Time> updateTeam(@PathVariable Long id, @RequestBody Time teamDetails) {
+        Time team = teamRepository.findById(id)
                                   .orElse(null);
         if (team != null) {
-            team.setName(teamDetails.getName());
-            team.setCountry(teamDetails.getCountry());
-            team.setFoundationYear(teamDetails.getFoundationYear());
+            team.setNomeTime(teamDetails.getNomeTime());
+            team.setNomeCentroDeTreinamento(teamDetails.getNomeCentroDeTreinamento());
+            team.setNomeEstadio(teamDetails.getNomeEstadio());
             return new ResponseEntity<>(teamRepository.save(team), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -58,7 +58,7 @@ public class TeamController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Team> deleteTeam(@PathVariable Long id) {
+    public ResponseEntity<Time> deleteTeam(@PathVariable Long id) {
         try {
             teamRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
