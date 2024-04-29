@@ -77,7 +77,6 @@ public class Tecnico {
 	public void setAreaAtuacao(Double areaAtuacao) {
 		this.areaAtuacao = areaAtuacao;
 	}
-	
-	
+
 	
 }

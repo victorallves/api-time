@@ -2,9 +2,12 @@ package br.com.sistemas.magna.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,6 +29,10 @@ public class Estatistica {
 	
 	@Column(name = "nome_campeonato", nullable = false)
     private String nomeCampeonato;
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "atleta_id", referencedColumnName = "id")
+    private Atleta atleta;
 
 	public Long getId() {
 		return id;
@@ -67,6 +74,13 @@ public class Estatistica {
 		this.nomeCampeonato = nomeCampeonato;
 	}
 
-	
+	public Atleta getAtleta() {
+		return atleta;
+	}
+
+	public void setAtleta(Atleta atleta) {
+		this.atleta = atleta;
+	}
+
 	
 }

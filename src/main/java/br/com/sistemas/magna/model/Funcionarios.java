@@ -4,9 +4,12 @@ import java.sql.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -28,7 +31,12 @@ public class Funcionarios {
 	
 	@Column(name = "salario", nullable = false)
     private Double salario;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "time_id", referencedColumnName = "id")
+    private Time time;
 
+	
 	public Long getId() {
 		return id;
 	}
@@ -68,7 +76,14 @@ public class Funcionarios {
 	public void setSalario(Double salario) {
 		this.salario = salario;
 	}
-	
-	
+
+	public Time getTime() {
+		return time;
+	}
+
+	public void setTime(Time time) {
+		this.time = time;
+	}
+
 	
 }

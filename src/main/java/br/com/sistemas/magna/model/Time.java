@@ -1,10 +1,17 @@
 package br.com.sistemas.magna.model;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,6 +31,13 @@ public class Time {
 	@Column(name = "nome_estadio", nullable = false)
 	private String nomeEstadio;
 	
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "time_id", referencedColumnName = "id")
+    private Tecnico tecnico;
+	
+	@OneToMany(mappedBy = "time", cascade = CascadeType.ALL)
+    private List<Atleta> atletas;
+
 	public Long getId() {
 		return id;
 	}
@@ -49,6 +63,19 @@ public class Time {
 		this.nomeEstadio = nomeEstadio;
 	}
 	
-
+	public Tecnico getTecnico() {
+		return tecnico;
+	}
+	public void setTecnico(Tecnico tecnico) {
+		this.tecnico = tecnico;
+	}
+	public List<Atleta> getAtletas() {
+		return atletas;
+	}
+	public void setAtletas(List<Atleta> atletas) {
+		this.atletas = atletas;
+	}
+	
+	
 
 }
