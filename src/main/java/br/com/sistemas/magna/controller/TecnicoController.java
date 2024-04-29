@@ -56,6 +56,11 @@ public class TecnicoController {
 	                                  .orElse(null);
 	        if (tecnico != null) {
 	        	tecnico.setNomeTecnico(tecnicoDetails.getNomeTecnico());
+	        	tecnico.setId(tecnicoDetails.getId());
+	        	tecnico.setNacionalidade(tecnicoDetails.getNacionalidade());
+	        	tecnico.setAreaAtuacao(tecnicoDetails.getAreaAtuacao());
+	        	tecnico.setSalario(tecnicoDetails.getSalario());
+	        	tecnico.setValorTecnico(tecnicoDetails.getValorTecnico());
 	
 	            return new ResponseEntity<>(tecnicoRepository.save(tecnico), HttpStatus.OK);
 	        } else {

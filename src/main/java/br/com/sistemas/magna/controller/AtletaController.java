@@ -55,8 +55,21 @@ public class AtletaController {
         Atleta atleta = atletaRepository.findById(id)
                                   .orElse(null);
         if (atleta != null) {
+        	atleta.setId(atletaDetails.getId());
+        	atleta.setNomeCompleto(atletaDetails.getNomeCompleto());
+        	atleta.setDataNascimento(atletaDetails.getDataNascimento());
         	atleta.setCpf(atletaDetails.getCpf());
-        	//faltam gets e sets
+        	atleta.setNacionalidade(atletaDetails.getNacionalidade());
+        	atleta.setNumeroRegistro(atletaDetails.getNumeroRegistro());
+        	atleta.setPosicaoAtleta(atletaDetails.getPosicaoAtleta());
+        	atleta.setNumeroCamisa(atletaDetails.getNumeroCamisa());
+        	atleta.setSalario(atletaDetails.getSalario());
+        	atleta.setValorAtleta(atletaDetails.getValorAtleta());
+        	atleta.setTelefone(atletaDetails.getTelefone());
+        	atleta.setNomeMae(atletaDetails.getNomeMae());
+        	atleta.setNomePai(atletaDetails.getNomePai());
+        	atleta.setDataInicio(atletaDetails.getDataInicio());
+        	atleta.setDataTermino(atletaDetails.getDataTermino());
             return new ResponseEntity<>(atletaRepository.save(atleta), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

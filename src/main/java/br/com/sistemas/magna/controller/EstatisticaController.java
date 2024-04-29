@@ -55,8 +55,11 @@ public class EstatisticaController {
     	Estatistica estatistica = estatisticaRepository.findById(id)
                                   .orElse(null);
         if (estatistica != null) {
+        	estatistica.setId(estatisticaDetails.getId());
+        	estatistica.setNomeCampeonato(estatisticaDetails.getNomeCampeonato());
+        	estatistica.setNumeroDeCartaoAmarelo(estatisticaDetails.getNumeroDeCartaoAmarelo());
+        	estatistica.setNumeroDeCartaoVermelho(estatistica.getNumeroDeCartaoVermelho());
         	estatistica.setNumeroDeGols(estatisticaDetails.getNumeroDeGols());
-        	//faltam gets e sets
             return new ResponseEntity<>(estatisticaRepository.save(estatistica), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

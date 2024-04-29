@@ -56,7 +56,10 @@ public class FuncionariosController {
 	                                  .orElse(null);
 	        if (funcionarios != null) {
 	        	funcionarios.setNomeCompleto(funcionariosDetails.getNomeCompleto());
-	        	//faltam gets e sets
+	        	funcionarios.setData_nascimento(funcionariosDetails.getData_nascimento());
+	        	funcionarios.setId(funcionariosDetails.getId());
+	        	funcionarios.setCargo(funcionariosDetails.getCargo());
+	        	funcionarios.setSalario(funcionariosDetails.getSalario());
 	            return new ResponseEntity<>(funcionariosRepository.save(funcionarios), HttpStatus.OK);
 	        } else {
 	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
