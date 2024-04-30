@@ -2,6 +2,9 @@ package br.com.sistemas.magna.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,10 +34,12 @@ public class Time {
 	@Column(name = "nome_estadio", nullable = false)
 	private String nomeEstadio;
 	
+	@JsonBackReference
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "time_id", referencedColumnName = "id")
     private Tecnico tecnico;
 	
+	@JsonManagedReference
 	@OneToMany(mappedBy = "time", cascade = CascadeType.ALL)
     private List<Atleta> atletas;
 

@@ -1,6 +1,7 @@
 package br.com.sistemas.magna.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,67 +15,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.sistemas.magna.model.Estatistica;
-import br.com.sistemas.magna.repository.EstatisticaRepository;
+import br.com.sistemas.magna.dto.EstatisticaDTO;
+import br.com.sistemas.magna.service.EstatisticaService;
 
 @RestController
-@RequestMapping("/estatistica")
+@RequestMapping("/estatisticas")
 public class EstatisticaController {
 
-	@Autowired
-    private EstatisticaRepository estatisticaRepository;
+    @Autowired
+    private EstatisticaService estatisticaService;
 
     @GetMapping
-    public List<Estatistica> getAllEstatistica() {
-        return estatisticaRepository.findAll();
+    public List<EstatisticaDTO> getAllEstatisticas() {
+        return estatisticaService.getAllEstatisticas();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Estatistica> getEstatisticaById(@PathVariable Long id) {
-    	Estatistica estatistica = estatisticaRepository.findById(id)
-                                  .orElse(null);
-        if (estatistica != null) {
-            return new ResponseEntity<>(estatistica, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<EstatisticaDTO> getEstatisticaById(@PathVariable Long id) {
+        Optional<EstatisticaDTO> estatistica = estatisticaService.getEstatisticaById(id);
+        return estatistica.map(e -> new ResponseEntity<>(e, HttpStatus.OK))
+                          .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
-    public ResponseEntity<Estatistica> createEstatistica(@RequestBody Estatistica estatistica) {
-        try {
-        	Estatistica createdEstatistica = estatisticaRepository.save(estatistica);
-            return new ResponseEntity<>(createdEstatistica, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<EstatisticaDTO> createEstatistica(@RequestBody EstatisticaDTO estatisticaDTO) {
+        EstatisticaDTO createdEstatistica = estatisticaService.createEstatistica(estatisticaDTO);
+        return new ResponseEntity<>(createdEstatistica, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Estatistica> updateEstatistica(@PathVariable Long id, @RequestBody Estatistica estatisticaDetails) {
-    	Estatistica estatistica = estatisticaRepository.findById(id)
-                                  .orElse(null);
-        if (estatistica != null) {
-        	estatistica.setId(estatisticaDetails.getId());
-        	estatistica.setNomeCampeonato(estatisticaDetails.getNomeCampeonato());
-        	estatistica.setNumeroDeCartaoAmarelo(estatisticaDetails.getNumeroDeCartaoAmarelo());
-        	estatistica.setNumeroDeCartaoVermelho(estatistica.getNumeroDeCartaoVermelho());
-        	estatistica.setNumeroDeGols(estatisticaDetails.getNumeroDeGols());
-            return new ResponseEntity<>(estatisticaRepository.save(estatistica), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<EstatisticaDTO> updateEstatistica(@PathVariable Long id, @RequestBody EstatisticaDTO estatisticaDetailsDTO) {
+        Optional<EstatisticaDTO> updatedEstatistica = estatisticaService.updateEstatistica(id, estatisticaDetailsDTO);
+        return updatedEstatistica.map(e -> new ResponseEntity<>(e, HttpStatus.OK))
+                                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Estatistica> deleteEstatistica(@PathVariable Long id) {
-        try {
-        	estatisticaRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Void> deleteEstatistica(@PathVariable Long id) {
+        estatisticaService.deleteEstatistica(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-	
-	
 }

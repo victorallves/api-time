@@ -1,7 +1,7 @@
 package br.com.sistemas.magna.controller;
 
 import java.util.List;
-
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,67 +13,44 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import br.com.sistemas.magna.model.Funcionarios;
-import br.com.sistemas.magna.repository.FuncionariosRepository;
+import br.com.sistemas.magna.dto.FuncionariosDTO;
+import br.com.sistemas.magna.service.FuncionariosService;
 
 @RestController
 @RequestMapping("/funcionarios")
 public class FuncionariosController {
 
-	  @Autowired
-	    private FuncionariosRepository funcionariosRepository;
+    @Autowired
+    private FuncionariosService funcionariosService;
 
-	    @GetMapping
-	    public List<Funcionarios> getAllFuncionarios() {
-	        return funcionariosRepository.findAll();
-	    }
+    @GetMapping
+    public List<FuncionariosDTO> getAllFuncionarios() {
+        return funcionariosService.getAllFuncionarios();
+    }
 
-	    @GetMapping("/{id}")
-	    public ResponseEntity<Funcionarios> getFuncionariosById(@PathVariable Long id) {
-	    	Funcionarios funcionarios = funcionariosRepository.findById(id)
-	                                  .orElse(null);
-	        if (funcionarios != null) {
-	            return new ResponseEntity<>(funcionarios, HttpStatus.OK);
-	        } else {
-	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	        }
-	    }
+    @GetMapping("/{id}")
+    public ResponseEntity<FuncionariosDTO> getFuncionariosById(@PathVariable Long id) {
+        Optional<FuncionariosDTO> funcionarios = funcionariosService.getFuncionariosById(id);
+        return funcionarios.map(funcionario -> new ResponseEntity<>(funcionario, HttpStatus.OK))
+                           .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
-	    @PostMapping
-	    public ResponseEntity<Funcionarios> createFuncionarios(@RequestBody Funcionarios funcionarios) {
-	        try {
-	        	Funcionarios createdfuncionarios = funcionariosRepository.save(funcionarios);
-	            return new ResponseEntity<>(createdfuncionarios, HttpStatus.CREATED);
-	        } catch (Exception e) {
-	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-	        }
-	    }
+    @PostMapping
+    public ResponseEntity<FuncionariosDTO> createFuncionarios(@RequestBody FuncionariosDTO funcionariosDTO) {
+        FuncionariosDTO createdFuncionarios = funcionariosService.createFuncionarios(funcionariosDTO);
+        return new ResponseEntity<>(createdFuncionarios, HttpStatus.CREATED);
+    }
 
-	    @PutMapping("/{id}")
-	    public ResponseEntity<Funcionarios> updateFuncionarios(@PathVariable Long id, @RequestBody Funcionarios funcionariosDetails) {
-	    	Funcionarios funcionarios = funcionariosRepository.findById(id)
-	                                  .orElse(null);
-	        if (funcionarios != null) {
-	        	funcionarios.setNomeCompleto(funcionariosDetails.getNomeCompleto());
-	        	funcionarios.setData_nascimento(funcionariosDetails.getData_nascimento());
-	        	funcionarios.setId(funcionariosDetails.getId());
-	        	funcionarios.setCargo(funcionariosDetails.getCargo());
-	        	funcionarios.setSalario(funcionariosDetails.getSalario());
-	            return new ResponseEntity<>(funcionariosRepository.save(funcionarios), HttpStatus.OK);
-	        } else {
-	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	        }
-	    }
+    @PutMapping("/{id}")
+    public ResponseEntity<FuncionariosDTO> updateFuncionarios(@PathVariable Long id, @RequestBody FuncionariosDTO funcionariosDetailsDTO) {
+        Optional<FuncionariosDTO> updatedFuncionarios = funcionariosService.updateFuncionarios(id, funcionariosDetailsDTO);
+        return updatedFuncionarios.map(funcionario -> new ResponseEntity<>(funcionario, HttpStatus.OK))
+                                  .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
-	    @DeleteMapping("/{id}")
-	    public ResponseEntity<Funcionarios> deleteFuncionarios(@PathVariable Long id) {
-	        try {
-	        	funcionariosRepository.deleteById(id);
-	            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	        } catch (Exception e) {
-	            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-	        }
-	    }
-	
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFuncionarios(@PathVariable Long id) {
+        funcionariosService.deleteFuncionarios(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

@@ -2,6 +2,8 @@ package br.com.sistemas.magna.model;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,27 +18,27 @@ import jakarta.persistence.Table;
 @Table(name = "tbl_funcionarios")
 public class Funcionarios {
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-	@Column(name = "nome_completo", nullable = false)
-    private String nomeCompleto;
-	
-	@Column(name = "data_nascimento", nullable = false)
-    private Date data_nascimento;
 
-	@Column(name = "cargo", nullable = false)
+    @Column(name = "nome_completo", nullable = false)
+    private String nomeCompleto;
+
+    @Column(name = "data_nascimento", nullable = false)
+    private Date dataNascimento;
+
+    @Column(name = "cargo", nullable = false)
     private String cargo;
-	
-	@Column(name = "salario", nullable = false)
+
+    @Column(name = "salario", nullable = false)
     private Double salario;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "time_id", referencedColumnName = "id")
     private Time time;
 
-	
 	public Long getId() {
 		return id;
 	}
@@ -53,12 +55,12 @@ public class Funcionarios {
 		this.nomeCompleto = nomeCompleto;
 	}
 
-	public Date getData_nascimento() {
-		return data_nascimento;
+	public Date getDataNascimento() {
+		return dataNascimento;
 	}
 
-	public void setData_nascimento(Date data_nascimento) {
-		this.data_nascimento = data_nascimento;
+	public void setDataNascimento(Date dataNascimento) {
+		this.dataNascimento = dataNascimento;
 	}
 
 	public String getCargo() {
@@ -85,5 +87,5 @@ public class Funcionarios {
 		this.time = time;
 	}
 
-	
+    
 }

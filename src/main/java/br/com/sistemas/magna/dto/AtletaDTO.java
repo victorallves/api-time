@@ -1,87 +1,52 @@
-package br.com.sistemas.magna.model;
+package br.com.sistemas.magna.dto;
 
 import java.sql.Date;
 import java.util.List;
+import br.com.sistemas.magna.model.Estatistica;
+import br.com.sistemas.magna.model.Time;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "tbl_atleta")
-public class Atleta {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	@Column(name = "nome_completo", nullable = false)
-	private String nomeCompleto;
-
-	@Column(name = "cpf", nullable = false)
-	private String cpf;
-
-	@Column(name = "data_nascimento", nullable = false)
-	private Date dataNascimento;
-
-	@Column(name = "telefone", nullable = false)
-	private Integer telefone;
-
-	@Column(name = "salario", nullable = false)
-	private Double salario;
-
-	@Column(name = "valor_atleta", nullable = false)
-	private Double valorAtleta;
-
-	@Column(name = "posicao_atleta", nullable = false)
-	private String posicaoAtleta;
-
-	@Column(name = "nacionalidade", nullable = false)
-	private String nacionalidade;
-
-	@Column(name = "nome_pai", nullable = false)
-	private String nomePai;
-
-	@Column(name = "nome_mae", nullable = false)
-	private String nomeMae;
-
-	@Column(name = "numero_registro", nullable = false)
-	private Integer numeroRegistro;
-
-	@Column(name = "numero_camisa", nullable = false)
-	private Integer numeroCamisa;
-
-	@Column(name = "data_inicio_contrato", nullable = false)
-	private Date dataInicio;
-
-	@Column(name = "data_termino_contrato", nullable = false)
-	private Date dataTermino;
-
-	@OneToMany(mappedBy = "atleta", cascade = CascadeType.ALL)
-	@JsonIgnore
-	private List<Estatistica> estatisticas;
+public class AtletaDTO {
 	
-	@JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "time_id", nullable = false)
-    private Time time;
+	private String nomeCompleto;
+	private String cpf;
+	private Date dataNascimento;
+	private Integer telefone;
+	private Double salario;
+	private Double valorAtleta;
+	private String posicaoAtleta;
+	private String nacionalidade;
+	private String nomePai;
+	private String nomeMae;
+	private Integer numeroRegistro;
+	private Integer numeroCamisa;
+	private Date dataInicio;
+	private Date dataTermino;
+	private List<Estatistica> estatisticas;
+	private Time time;
+	
+	public AtletaDTO() {
 
-	public Long getId() {
-		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public AtletaDTO(String nomeCompleto, String cpf, Date dataNascimento, Integer telefone, Double salario,Double valorAtleta, String posicaoAtleta, String nacionalidade, String nomePai, String nomeMae,Integer numeroRegistro, Integer numeroCamisa, Date dataInicio, Date dataTermino,List<Estatistica> estatisticas, Time time) {
+
+		this.nomeCompleto = nomeCompleto;
+		this.cpf = cpf;
+		this.dataNascimento = dataNascimento;
+		this.telefone = telefone;
+		this.salario = salario;
+		this.valorAtleta = valorAtleta;
+		this.posicaoAtleta = posicaoAtleta;
+		this.nacionalidade = nacionalidade;
+		this.nomePai = nomePai;
+		this.nomeMae = nomeMae;
+		this.numeroRegistro = numeroRegistro;
+		this.numeroCamisa = numeroCamisa;
+		this.dataInicio = dataInicio;
+		this.dataTermino = dataTermino;
+		this.estatisticas = estatisticas;
+		this.time = time;
+		
 	}
 
 	public String getNomeCompleto() {
@@ -211,7 +176,6 @@ public class Atleta {
 	public void setTime(Time time) {
 		this.time = time;
 	}
-	
-	
+
 
 }

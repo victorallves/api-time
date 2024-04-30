@@ -1,6 +1,7 @@
 package br.com.sistemas.magna.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,68 +15,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.sistemas.magna.model.Tecnico;
-import br.com.sistemas.magna.repository.TecnicoRepository;
+import br.com.sistemas.magna.dto.TecnicoDTO;
+import br.com.sistemas.magna.service.TecnicoService;
 
 @RestController
-@RequestMapping("/tecnico")
+@RequestMapping("/tecnicos")
 public class TecnicoController {
 
-	  @Autowired
-	    private TecnicoRepository tecnicoRepository;
+    @Autowired
+    private TecnicoService tecnicoService;
 
-	    @GetMapping
-	    public List<Tecnico> getAllTecnico() {
-	        return tecnicoRepository.findAll();
-	    }
+    @GetMapping
+    public List<TecnicoDTO> getAllTecnicos() {
+        return tecnicoService.getAllTecnicos();
+    }
 
-	    @GetMapping("/{id}")
-	    public ResponseEntity<Tecnico> getTecnicoById(@PathVariable Long id) {
-	    	Tecnico tecnico = tecnicoRepository.findById(id)
-	                                  .orElse(null);
-	        if (tecnico != null) {
-	            return new ResponseEntity<>(tecnico, HttpStatus.OK);
-	        } else {
-	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	        }
-	    }
+    @GetMapping("/{id}")
+    public ResponseEntity<TecnicoDTO> getTecnicoById(@PathVariable Long id) {
+        Optional<TecnicoDTO> tecnico = tecnicoService.getTecnicoById(id);
+        return tecnico.map(t -> new ResponseEntity<>(t, HttpStatus.OK))
+                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
-	    @PostMapping
-	    public ResponseEntity<Tecnico> createTecnico(@RequestBody Tecnico tecnico) {
-	        try {
-	            Tecnico createdTecnico = tecnicoRepository.save(tecnico);
-	            return new ResponseEntity<>(createdTecnico, HttpStatus.CREATED);
-	        } catch (Exception e) {
-	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-	        }
-	    }
+    @PostMapping
+    public ResponseEntity<TecnicoDTO> createTecnico(@RequestBody TecnicoDTO tecnicoDTO) {
+        TecnicoDTO createdTecnico = tecnicoService.createTecnico(tecnicoDTO);
+        return new ResponseEntity<>(createdTecnico, HttpStatus.CREATED);
+    }
 
-	    @PutMapping("/{id}")
-	    public ResponseEntity<Tecnico> updateTecnico(@PathVariable Long id, @RequestBody Tecnico tecnicoDetails) {
-	    	Tecnico tecnico = tecnicoRepository.findById(id)
-	                                  .orElse(null);
-	        if (tecnico != null) {
-	        	tecnico.setNomeTecnico(tecnicoDetails.getNomeTecnico());
-	        	tecnico.setId(tecnicoDetails.getId());
-	        	tecnico.setNacionalidade(tecnicoDetails.getNacionalidade());
-	        	tecnico.setAreaAtuacao(tecnicoDetails.getAreaAtuacao());
-	        	tecnico.setSalario(tecnicoDetails.getSalario());
-	        	tecnico.setValorTecnico(tecnicoDetails.getValorTecnico());
-	
-	            return new ResponseEntity<>(tecnicoRepository.save(tecnico), HttpStatus.OK);
-	        } else {
-	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	        }
-	    }
+    @PutMapping("/{id}")
+    public ResponseEntity<TecnicoDTO> updateTecnico(@PathVariable Long id, @RequestBody TecnicoDTO tecnicoDetailsDTO) {
+        Optional<TecnicoDTO> updatedTecnico = tecnicoService.updateTecnico(id, tecnicoDetailsDTO);
+        return updatedTecnico.map(t -> new ResponseEntity<>(t, HttpStatus.OK))
+                             .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
-	    @DeleteMapping("/{id}")
-	    public ResponseEntity<Tecnico> deleteTecnico(@PathVariable Long id) {
-	        try {
-	        	tecnicoRepository.deleteById(id);
-	            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	        } catch (Exception e) {
-	            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-	        }
-	    }
-	
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTecnico(@PathVariable Long id) {
+        tecnicoService.deleteTecnico(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

@@ -1,7 +1,7 @@
 package br.com.sistemas.magna.controller;
 
 import java.util.List;
-
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,77 +13,44 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import br.com.sistemas.magna.model.Atleta;
-import br.com.sistemas.magna.repository.AtletaRepository;
+import br.com.sistemas.magna.dto.AtletaDTO;
+import br.com.sistemas.magna.service.AtletaService;
 
 @RestController
-@RequestMapping("/atleta")
+@RequestMapping("/atletas")
 public class AtletaController {
 
     @Autowired
-    private AtletaRepository atletaRepository;
+    private AtletaService atletaService;
 
     @GetMapping
-    public List<Atleta> getAllAtleta() {
-        return atletaRepository.findAll();
+    public List<AtletaDTO> getAllAtletas() {
+        return atletaService.getAllAtletas();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Atleta> getAtletaById(@PathVariable Long id) {
-        Atleta atleta = atletaRepository.findById(id)
-                                  .orElse(null);
-        if (atleta != null) {
-            return new ResponseEntity<>(atleta, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<AtletaDTO> getAtletaById(@PathVariable Long id) {
+        Optional<AtletaDTO> atleta = atletaService.getAtletaById(id);
+        return atleta.map(a -> new ResponseEntity<>(a, HttpStatus.OK))
+                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
-    public ResponseEntity<Atleta> createAtleta(@RequestBody Atleta atleta) {
-        try {
-            Atleta createdAtleta = atletaRepository.save(atleta);
-            return new ResponseEntity<>(createdAtleta, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<AtletaDTO> createAtleta(@RequestBody AtletaDTO atletaDTO) {
+        AtletaDTO createdAtleta = atletaService.createAtleta(atletaDTO);
+        return new ResponseEntity<>(createdAtleta, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Atleta> updateAtleta(@PathVariable Long id, @RequestBody Atleta atletaDetails) {
-        Atleta atleta = atletaRepository.findById(id)
-                                  .orElse(null);
-        if (atleta != null) {
-        	atleta.setId(atletaDetails.getId());
-        	atleta.setNomeCompleto(atletaDetails.getNomeCompleto());
-        	atleta.setDataNascimento(atletaDetails.getDataNascimento());
-        	atleta.setCpf(atletaDetails.getCpf());
-        	atleta.setNacionalidade(atletaDetails.getNacionalidade());
-        	atleta.setNumeroRegistro(atletaDetails.getNumeroRegistro());
-        	atleta.setPosicaoAtleta(atletaDetails.getPosicaoAtleta());
-        	atleta.setNumeroCamisa(atletaDetails.getNumeroCamisa());
-        	atleta.setSalario(atletaDetails.getSalario());
-        	atleta.setValorAtleta(atletaDetails.getValorAtleta());
-        	atleta.setTelefone(atletaDetails.getTelefone());
-        	atleta.setNomeMae(atletaDetails.getNomeMae());
-        	atleta.setNomePai(atletaDetails.getNomePai());
-        	atleta.setDataInicio(atletaDetails.getDataInicio());
-        	atleta.setDataTermino(atletaDetails.getDataTermino());
-            return new ResponseEntity<>(atletaRepository.save(atleta), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<AtletaDTO> updateAtleta(@PathVariable Long id, @RequestBody AtletaDTO atletaDetailsDTO) {
+        Optional<AtletaDTO> updatedAtleta = atletaService.updateAtleta(id, atletaDetailsDTO);
+        return updatedAtleta.map(a -> new ResponseEntity<>(a, HttpStatus.OK))
+                            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Atleta> deleteAtleta(@PathVariable Long id) {
-        try {
-        	atletaRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Void> deleteAtleta(@PathVariable Long id) {
+        atletaService.deleteAtleta(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
-
